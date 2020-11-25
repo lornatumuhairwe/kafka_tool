@@ -1,0 +1,31 @@
+version: "3.5"
+services:
+  # pubsub:
+  #   build: ./pubsub
+  #   command: ruby sub.rb
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.4.0
+    env_file:
+      - .env.zookeeper
+    networks:
+      - tool_network
+  broker:
+    image: confluentinc/cp-server
+    depends_on:
+      - zookeeper
+    env_file:
+      - .env.broker
+    networks:
+      - tool_network
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.4.0
+    depends_on:
+      - broker
+    env_file:
+      - .env.control-center
+    networks:
+      - tool_network
+
+networks:
+  tool_network:
+    name: tool_network
